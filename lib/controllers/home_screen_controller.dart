@@ -17,8 +17,9 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
 
   void fetchCurrencies() async {
     try {
-      var currencies = await api.getCurrencies();
-      state = state.copyWith(currencies: AsyncValue.data(currencies));
+      state = state.copyWith(currencies: const AsyncValue.loading());
+      var codes = await api.getCurrencies();
+      state = state.copyWith(currencies: AsyncValue.data(codes.supportedCodes));
     } catch (e, stackTrace) {
       state = state.copyWith(currencies: AsyncValue.error(e, stackTrace));
     }
@@ -32,7 +33,7 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
         state = state.copyWith(conversionRates: AsyncValue.data(conversionRates));
       }
     } catch (e, stackTrace) {
-      state = state.copyWith(currencies: AsyncValue.error(e, stackTrace));
+      state = state.copyWith(conversionRates: AsyncValue.error(e, stackTrace));
     }
   }
 
@@ -63,8 +64,10 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
           amount: state.amount ?? 1,
         );
         state = state.copyWith(currencyConversion: AsyncValue.data(currencyConversion));
-      } catch (e) {
+        fetchConversionRates();
+      } catch (e, stackTrace) {
         debugPrint(e.toString());
+        state = state.copyWith(currencyConversion: AsyncValue.error(e, stackTrace));
       }
     }
   }

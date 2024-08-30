@@ -1,4 +1,7 @@
 import 'package:coin_switch/controllers/home_screen_controller.dart';
+import 'package:coin_switch/shared/enums.dart';
+import 'package:coin_switch/widgets/conversion_rate_loading_tile.dart';
+import 'package:coin_switch/widgets/conversion_rate_tile.dart';
 import 'package:coin_switch/widgets/custom_drop_down.dart';
 import 'package:coin_switch/widgets/custom_text_field.dart';
 import 'package:flutter/material.dart';
@@ -32,6 +35,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget build(BuildContext context) {
     var homeScreenState = ref.watch(homeScreenControllerProvider);
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.fromLTRB(
@@ -41,6 +45,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             0,
           ),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -53,7 +58,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                         homeScreenState.currencies.when(
                           loading: () => const CircularProgressIndicator(),
-                          error: (error, stackTrace) => Text(error.toString(), maxLines: 1),
+                          error: (error, stackTrace) {
+                            return GestureDetector(
+                              onTap: () {
+                                ref.read(homeScreenControllerProvider.notifier).fetchCurrencies();
+                              },
+                              child: const Text('Retry.'),
+                            );
+                          },
                           data: (data) {
                             return CustomDropdown(
                               items: data,
@@ -81,7 +93,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                         homeScreenState.currencies.when(
                           loading: () => const CircularProgressIndicator(),
-                          error: (error, stackTrace) => Text(error.toString(), maxLines: 1),
+                          error: (error, stackTrace) {
+                            return GestureDetector(
+                              onTap: () {
+                                ref.read(homeScreenControllerProvider.notifier).fetchCurrencies();
+                              },
+                              child: const Text('Retry.'),
+                            );
+                          },
                           data: (data) {
                             return CustomDropdown(
                               items: data,
@@ -157,6 +176,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                         '${data?.conversionResult} ${data?.targetCode}',
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(color: Theme.of(context).colorScheme.secondary),
                                       );
                                     } else {
                                       return const Text('');
@@ -186,12 +206,56 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               data?.conversionRate.toString() ?? '',
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
+                              style: TextStyle(color: Theme.of(context).colorScheme.secondary),
                             ),
                           )),
                         ],
                       ),
                     ],
                   ),
+                ),
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.03),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Conversion Rates',
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Theme.of(context).colorScheme.primary),
+                    ),
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+                    homeScreenState.conversionRates.when(
+                      loading: () {
+                        return Expanded(
+                          child: ListView.builder(
+                            itemCount: 5,
+                            itemBuilder: (context, index) => const ConversionRateLoadingTile(),
+                          ),
+                        );
+                      },
+                      error: (error, stackTrace) => Text(error.toString()),
+                      data: (data) {
+                        if (data != null) {
+                          return Expanded(
+                            child: ListView.builder(
+                              itemCount: Currency.values.length,
+                              itemBuilder: (context, index) {
+                                final rate = data.conversionRates[Currency.values[index].name] ?? 0;
+                                return ConversionRateTile(
+                                  currency: Currency.values[index],
+                                  rate: rate,
+                                  baseCurrency: data.baseCode,
+                                );
+                              },
+                            ),
+                          );
+                        } else {
+                          return const SizedBox.shrink();
+                        }
+                      },
+                    )
+                  ],
                 ),
               )
             ],

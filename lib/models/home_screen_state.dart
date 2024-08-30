@@ -5,7 +5,7 @@ import 'package:coin_switch/models/conversion_rate.dart';
 import 'package:coin_switch/models/currency_conversion.dart';
 
 class HomeScreenState {
-  AsyncValue<List<String>> currencies;
+  AsyncValue<List<List<String>>> currencies;
   String? baseCurrency;
   String? targetCurrency;
   double? amount;
@@ -26,8 +26,10 @@ class HomeScreenState {
         conversionRates = const AsyncValue.data(null),
         currencyConversion = const AsyncValue.data(null);
 
+
+
   HomeScreenState copyWith({
-    AsyncValue<List<String>>? currencies,
+    AsyncValue<List<List<String>>>? currencies,
     String? baseCurrency,
     String? targetCurrency,
     double? amount,

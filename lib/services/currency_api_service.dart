@@ -1,3 +1,4 @@
+import 'package:coin_switch/models/codes.dart';
 import 'package:coin_switch/models/conversion_rate.dart';
 import 'package:coin_switch/models/currency_conversion.dart';
 import 'package:coin_switch/shared/creds.dart';
@@ -9,19 +10,14 @@ final currencyApiProvider = Provider((ref) => CurrencyApiService());
 class CurrencyApiService {
   final Dio _dio = Dio();
 
-  Future<List<String>> getCurrencies() async {
-    List<String> curriencies = [];
+  Future<Codes> getCurrencies() async {
     try {
-      var res = await _dio.get('https://v6.exchangerate-api.com/v6/${Creds.apiKey}/latest/ETB');
-      var conversionRate = ConversionRates.fromMap(res.data);
-      conversionRate.conversionRates.forEach((code, rate) {
-        curriencies.add(code);
-      });
-      return curriencies;
-    } on DioException catch (_) {
-      return [];
+      var res = await _dio.get('https://v6.exchangerate-api.com/v6/${Creds.apiKey}/codes');
+      return Codes.fromMap(res.data);
+    } on DioException catch (e) {
+      throw Exception('with ${e.response?.statusCode} status code.');
     } catch (e) {
-      return [];
+      throw Exception('Unkown error.');
     }
   }
 

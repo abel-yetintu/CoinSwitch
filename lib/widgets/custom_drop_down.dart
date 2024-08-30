@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class CustomDropdown extends StatelessWidget {
-  final List<String> items;
+  final List<List<String>> items;
   final String? selectedItem;
   final Function(dynamic) onChanged;
 
@@ -30,8 +30,8 @@ class CustomDropdown extends StatelessWidget {
           value: selectedItem,
           items: items.map((item) {
             return DropdownMenuItem(
-              value: item,
-              child: Text(item),
+              value: item[0],
+              child: Text(item[0]),
             );
           }).toList(),
           onChanged: onChanged,

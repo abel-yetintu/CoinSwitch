@@ -7,8 +7,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   runApp(
-    ProviderScope(
-      child: const CoinSwitch(),
+    const ProviderScope(
+      child: CoinSwitch(),
     ),
   );
 }
