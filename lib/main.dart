@@ -23,7 +23,7 @@ class CoinSwitch extends StatelessWidget {
         theme: ThemeData(
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color.fromARGB(2555, 65, 179, 162),
+            seedColor: const Color.fromARGB(255, 65, 179, 162),
             brightness: Brightness.dark,
         ),
       ),
