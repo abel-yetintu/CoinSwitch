@@ -1,4 +1,5 @@
 import 'package:coin_switch/shared/enums.dart';
+import 'package:coin_switch/shared/extensions.dart';
 import 'package:flutter/material.dart';
 
 class ConversionRateTile extends StatelessWidget {
@@ -50,7 +51,7 @@ class ConversionRateTile extends StatelessWidget {
             SizedBox(width: MediaQuery.of(context).size.width * 0.02),
             Expanded(
               child: Text(
-                '1 $baseCurrency = $rate ${currency.name}',
+                '1 $baseCurrency = ${rate.currencyFormat()} ${currency.name}',
                 style: Theme.of(context).textTheme.bodySmall,
                 textAlign: TextAlign.end,
                 maxLines: 1,

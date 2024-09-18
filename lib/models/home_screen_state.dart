@@ -22,11 +22,9 @@ class HomeScreenState {
   });
 
   HomeScreenState.initial()
-      : currencies = const AsyncValue.loading(),
+      : currencies = const AsyncLoading(),
         conversionRates = const AsyncValue.data(null),
         currencyConversion = const AsyncValue.data(null);
-
-
 
   HomeScreenState copyWith({
     AsyncValue<List<List<String>>>? currencies,

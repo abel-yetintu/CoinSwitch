@@ -12,8 +12,12 @@ class CustomTextField extends StatelessWidget {
       controller: textEditingController,
       keyboardType: TextInputType.number,
       textInputAction: TextInputAction.done,
+      onTapOutside: (event) {
+        FocusScope.of(context).unfocus();
+      },
       decoration: InputDecoration(
         suffix: Text(baseCode ?? ''),
+        isDense: true,
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(
             color: Theme.of(context).colorScheme.onSurface.withAlpha(100),
